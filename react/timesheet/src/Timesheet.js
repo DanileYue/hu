@@ -9,47 +9,43 @@ export default class TimesheetContainer extends Component {
 		super(props)
 		this.state = {
 			entries: [],
-			projectChartData: [],
-			activityChartData: []
+			currentEntry: {"projectCode": "", "activity": "", hours: 0}
 		}
 	}
-	
-	/*	-ES6 way of writing a function 
-			-This function is passed as a prop to the AddEntryForm component
+
+	/*	-ES6 way of writing a function
+			-This function is passed as a prop to the AddEntryForm component to get form componentschanges in state
 	*/
+	onFormChange = (key, value) => {
+		let newEntry = Object.assign({}, this.state.currentEntry)
+		newEntry[key] = value
+		this.setState({currentEntry: newEntry})
+	}
+
 	handleAddButtonclick = (e) => {
 		e.preventDefault()
-		let projectCode = document.getElementById('project-code').value
-		let activity = document.getElementById('activity').value
-		let hours = parseInt(document.getElementById('hours').value, 10)
 		this.setState({
-			entries: [
-				...this.state.entries, 
-				{
-					projectCode: projectCode,
-					activity: activity,
-					hours: hours
-				}],
-				projectChartData: [
-				...this.state.projectChartData,
-				{
-					name: projectCode,
-					y: hours
-				}],
-				activityChartData: [
-				...this.state.activityChartData,
-				{
-					name: activity,
-					y: hours
-				}]
+			entries: this.state.entries.concat(this.state.currentEntry),
+			currentEntry: {"projectCode": "", "activity": "", hours: 0}
 		})
 	}
-  
-  render() {
-  	const { entries, projectChartData, activityChartData } = this.state
+
+	generateChartData = (entryKey) => {
+		let chartData = []
+		this.state.entries.map(entry =>
+			chartData.push({name: entry[entryKey], y: parseInt(entry.hours,10)})
+		)
+		return chartData
+	}
+
+	render() {
+  	const { entries, currentEntry } = this.state
   	return (
     	<Timesheet onAddButtonClick={this.handleAddButtonclick} entries={entries}
-    						 projectChartData={projectChartData} activityChartData={activityChartData} />
+    						 projectChartData={this.generateChartData("projectCode")}
+								 activityChartData={this.generateChartData("activity")}
+								 formChangeHandler={this.onFormChange}
+								 currentEntry={currentEntry}/>
     )
   }
 }
@@ -59,58 +55,61 @@ class Timesheet extends Component {
   	/* -Use className instead of class attributes
 			 -React custom components begin with a capital letter like <AddEntryForm>
   	*/
-  	const { onAddButtonClick, entries, projectChartData, activityChartData } = this.props
+		const { onAddButtonClick, entries, projectChartData, activityChartData, formChangeHandler, currentEntry } = this.props
     return (
       <div className="row">
 	      <div className="col-md-12">
-	      	<AddEntryForm onAddButtonClick={onAddButtonClick} />
+	      	<AddEntryForm onAddButtonClick={onAddButtonClick}
+												onChange={(key, value) => formChangeHandler(key, value)}
+												currentEntry={currentEntry} />
 	      </div>
-	      <div className="col-md-8 col-md-offset-2">
+				<div className="col-md-10 col-md-offset-1">
+	      	<Chart chartData={activityChartData} title="By Activity"/>
+	      	<Chart chartData={projectChartData} title="By Project"/>
+	      </div>
+				<div className="col-md-8 col-md-offset-2">
 	      	<Entries entries={entries}/>
 	      </div>
-	      <div className="col-md-10 col-md-offset-1">
-	      	<Reports chartData={activityChartData} title="By Activity"/>
-	      	<Reports chartData={projectChartData} title="By Project"/>
-	      </div>
-      </div>
+	    </div>
     );
   }
 }
 
 class AddEntryForm extends Component {
-	
+
 	//to validate the datatypes of props
 	static propTypes = {
     onAddButtonClick: React.PropTypes.func,
   }
 
 	render() {
-		const { onAddButtonClick } = this.props
-		let projectCodes = ["Hiway", "Idera", "Next-IT", "Frrole", "MOM", "TrackMe"]
-		let activityTypes = ["Dev", "Meeting", "E-mail", "Testing", "Debug", "Learning"]
+		const { onAddButtonClick, onChange, currentEntry } = this.props
+		const projectCodes = ["Hiway", "Idera", "Next-IT", "Frrole", "MOM", "TrackMe"]
+		const activityTypes = ["Dev", "Meeting", "E-mail", "Testing", "Debug", "Learning"]
 		return (
 		<div className="add-entry-form col-md-offset-2">
 		<form onSubmit={(e) => onAddButtonClick(e)}>
 			<div className="col-md-3">
-				<select required id="project-code" className="form-control" defaultValue="" >
-				<option value="" disabled >Select Project Code</option>
-				{projectCodes.map((code,index) => 
+				<select value={currentEntry.projectCode} onChange={(e) => onChange("projectCode",e.target.value)}
+				 				required id="project-code" className="form-control" >
+					<option value="" disabled >Select Project Code</option>
+					{projectCodes.map((code,index) =>
 						<option key={index} value={code}>{code}</option>
-					)
-				}
-				</select>		
+					)}
+				</select>
 			</div>
 			<div className="col-md-3">
-				<select required id="activity" className="form-control" defaultValue="">
+				<select value={currentEntry.activity} onChange={(e) => onChange("activity",e.target.value)}
+				 				required id="activity" className="form-control">
 					<option value="" disabled>Select Activity</option>
-					{activityTypes.map((activity,index) => 
-							<option key={index} value={activity}>{activity}</option>
-						)
-					}
-				</select>		
+					{activityTypes.map((activity,index) =>
+						<option key={index} value={activity}>{activity}</option>
+					)}
+				</select>
 			</div>
 			<div className="col-md-3">
-				<input required id="hours" className="form-control" type="number" placeholder="Hours"/>
+				<input value={currentEntry.hours} onChange={(event) => onChange("hours", event.target.value)}
+				 			 required id="hours" className="form-control" type="number" placeholder="Hours"/>
 			</div>
 			<div className="col-md-3">
 				<input required className="btn" type="submit" value="ADD"/>
@@ -123,9 +122,22 @@ class AddEntryForm extends Component {
 
 
 class Entries extends Component {
+	//to validate the datatypes of props
+	static propTypes = {
+    onAddButtonClick: React.PropTypes.array,
+  }
+
 	render() {
 
 		const { entries } = this.props
+		const rows = entries.map((entry, index) =>
+			<tr key={index}>
+				<th>{index+1}</th>
+				<td>{entry.projectCode}</td>
+				<td>{entry.activity}</td>
+				<td>{entry.hours}</td>
+			</tr>
+		)
 
 		return (
 		<div className="timesheet-table">
@@ -139,14 +151,8 @@ class Entries extends Component {
 			    </tr>
 			  </thead>
 			  <tbody>
-			  	{entries.map((entry, index) => 
-			  		<tr key={index}>
-				      <th>{index+1}</th>
-				      <td>{entry.projectCode}</td>
-				      <td>{entry.activity}</td>
-				      <td>{entry.hours}</td>
-				    </tr>
-			  	)}
+			  	{(entries.length !== 0)?rows: <tr><th style={{textAlign: 'center'}}
+					 																		 colSpan="4">No Entries Entered</th></tr>}
 			  </tbody>
 			</table>
 		</div>
@@ -154,14 +160,13 @@ class Entries extends Component {
 	}
 }
 
-class Reports extends Component {
+class Chart extends Component {
 	render() {
 		const { chartData, title} = this.props
-		
 		let temp = {};
 
     /* This is a helper function to manipulate chartData. Let it be here as it is */
-    
+
     chartData.map((data, index) => {
       if(!temp[data.name]) {
     		temp[data.name] = data
@@ -171,7 +176,7 @@ class Reports extends Component {
       }
       return null
     })
-        
+
     let processedChartData = [];
     for (let prop in temp) {
     	if(!temp.hasOwnProperty(prop)) {
