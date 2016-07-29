@@ -15,3 +15,31 @@ body {
 .reports {
 	margin-top: 5%;
 }
+
+.table {
+  box-shadow: 0 4px 8px 0 #e6e6e6 , 0 6px 33px 0 #e6e6e6 ;
+}
+
+.table thead th {
+  background-color: #32cc99;
+  border: 5px solid #fff;
+  color: #fff;
+  margin-bottom: 10%;
+}
+
+.table tbody tr {
+  color: #000;
+  background-color: #e4e4e4;
+  border: 5px solid #fff;
+  margin-top: 10%;
+  font-size: 13px;
+}
+
+.form-control {
+  height: 50%;
+}
+
+.btn {
+  background-color: #00bcd4;
+  color: #fff;
+}
