@@ -45,7 +45,7 @@ export default class TimesheetContainer extends Component {
     						 projectChartData={this.generateChartData("projectCode")}
 								 activityChartData={this.generateChartData("activity")}
 								 formChangeHandler={this.onFormChange}
-								 currentEntry={currentEntry}/>
+								 currentEntry={currentEntry} />
     )
   }
 }
@@ -127,8 +127,11 @@ class Entries extends Component {
     onAddButtonClick: React.PropTypes.array,
   }
 
-	render() {
+	shouldComponentUpdate = (nextProps) => {
+		return (nextProps.entries.length !== this.props.entries.length)
+	}
 
+	render() {
 		const { entries } = this.props
 		const rows = entries.map((entry, index) =>
 			<tr key={index}>
@@ -161,6 +164,11 @@ class Entries extends Component {
 }
 
 class Chart extends Component {
+
+	shouldComponentUpdate(nextProps) {
+		return (nextProps.chartData.length !== this.props.chartData.length)
+	}
+
 	render() {
 		const { chartData, title} = this.props
 		let temp = {};
