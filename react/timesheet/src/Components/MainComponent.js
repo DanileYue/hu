@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import AddEntriesForm from './AddEntriesForm'
 import Chart from './Chart'
-import Entries from './Entries'
+import EntriesTable from './EntriesTable'
 
 
-class MainComponent extends Component {
+export default class MainComponent extends Component {
   render() {
   	/* -Use className instead of class attributes
 			 -React custom components begin with a capital letter like <AddEntryForm>
@@ -18,7 +18,7 @@ class MainComponent extends Component {
 					} = this.props
     
     return (
-      <div classsName="row">
+      <div className="row">
 	      <div className="col-md-12">
 	      	<AddEntriesForm onAddButtonClick={onAddButtonClick}
 												  onChange={(key, value) => formChangeHandler(key, value)}
@@ -29,7 +29,7 @@ class MainComponent extends Component {
 	      	<Chart chartData={projectChartData} title="By Project"/>
 	      </div>
 				<div className="col-md-8 col-md-offset-2">
-	      	<Entries entries={entries}/>
+	      	<EntriesTable entries={entries}/>
 	      </div>
 	    </div>
     );

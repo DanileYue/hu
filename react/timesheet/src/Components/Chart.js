@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import ReactHighchart from 'react-highcharts'
-import shallowCompare from 'react-addons-shallow-compare'
-
 
 export default class Chart extends Component {
 	
@@ -13,7 +11,6 @@ export default class Chart extends Component {
 	}
 
 	render() {
-		console.log('render')
 		const { chartData, title} = this.props
 		let temp = {}
 
