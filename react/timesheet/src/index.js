@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import MainContainer from './Containers/MainContainer';
+import Timesheet from './Timesheet';
 
 ReactDOM.render(
-  <MainContainer />,
+  <Timesheet />,
   document.getElementById('root')
 );

@@ -20,11 +20,14 @@ var indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html');
 var faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico');
 var buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build');
 var SCSS_LOADER = "style!css!postcss?minimize!sass-loader";
+var node_dir = __dirname + '/../node_modules';
+
 module.exports = {
   devtool: 'eval',
   entry: [
     require.resolve('webpack-dev-server/client') + '?http://localhost:3000',
     require.resolve('webpack/hot/dev-server'),
+    require.resolve('bootstrap-loader'),
     path.join(srcPath, 'index')
   ],
   output: {
@@ -35,6 +38,9 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
+    alias: {
+      jquery: node_dir + '/jquery/dist/jquery.min.js',
+    },
     extensions: ['', '.js'],
   },
   resolveLoader: {
@@ -94,6 +100,11 @@ module.exports = {
     }),
     new webpack.DefinePlugin({ 'process.env.NODE_ENV': '"development"' }),
     // Note: only CSS is currently hot reloaded
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery",
+      "window.jQuery": "jquery"
+    }),
   ]
 };

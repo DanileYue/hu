@@ -1,18 +1,17 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import ReactHighchart from 'react-highcharts'
 
 export default class Chart extends Component {
-	
-	shouldComponentUpdate(nextProps) {
-		if (JSON.stringify(nextProps) === JSON.stringify(this.props)) {
-			return false
-		}
-		return true
-	}
+
+  //to validate the datatypes of props
+  static propTypes = {
+    chart: PropTypes.array,
+    title: PropTypes.string
+  }
 
 	render() {
-		const { chartData, title} = this.props
-		let temp = {}
+    const { chartData, title} = this.props
+	  let temp = {}
 
     /* This is a helper function to manipulate chartData. Let it be here as it is */
     chartData.map((data, index) => {
@@ -52,9 +51,9 @@ export default class Chart extends Component {
     }
 
 		return (
-		<div className="reports col-md-4 col-md-offset-1">
-			<ReactHighchart config={chartConfig}/>
-		</div>
-			)
+  		<div className="reports col-md-4">
+  			<ReactHighchart config={chartConfig} />
+  		</div>
+		)
 	}
 }

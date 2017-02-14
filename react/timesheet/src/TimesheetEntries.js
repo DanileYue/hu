@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 
-export default class EntriesTable extends Component {
+export default class TimesheetEntries extends Component {
 	//to validate the datatypes of props
 	static propTypes = {
     onAddButtonClick: React.PropTypes.array,
