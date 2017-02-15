@@ -17,11 +17,17 @@ var nodeModulesPath = path.join(__dirname, '..', 'node_modules');
 var indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html');
 var faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico');
 var buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build');
+var SCSS_LOADER = "style!css!postcss?minimize!sass-loader";
+var node_dir = __dirname + '/../node_modules';
+
 
 module.exports = {
   bail: true,
   devtool: 'source-map',
-  entry: path.join(srcPath, 'index'),
+  entry: [
+    require.resolve('bootstrap-loader'),
+    path.join(srcPath, 'index')
+  ],
   output: {
     path: buildPath,
     filename: '[name].[chunkhash].js',
@@ -31,6 +37,9 @@ module.exports = {
     publicPath: '/'
   },
   resolve: {
+  alias: {
+      jquery: node_dir + '/jquery/dist/jquery.min.js',
+    },
     extensions: ['', '.js'],
   },
   resolveLoader: {
@@ -54,7 +63,6 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        include: srcPath,
         // Disable autoprefixer in css-loader itself:
         // https://github.com/webpack/css-loader/issues/281
         // We already have it thanks to postcss.
@@ -63,6 +71,10 @@ module.exports = {
       {
         test: /\.json$/,
         loader: 'json'
+      },
+      {
+        test: /\.scss$/,
+        loader: SCSS_LOADER
       },
       {
         test: /\.(jpg|png|gif|eot|svg|ttf|woff|woff2)$/,
@@ -116,6 +128,12 @@ module.exports = {
         comments: false,
         screw_ie8: true
       }
+    }
+  ),
+  new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery",
+      "window.jQuery": "jquery"
     }),
     new ExtractTextPlugin('[name].[contenthash].css')
   ]
