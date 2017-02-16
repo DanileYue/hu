@@ -1,6 +1,12 @@
 .add-entry-form {
   margin-top: 5%;
 
+  form {
+    div {
+      padding-left: 0;
+    }
+  }
+
   .btn {
     background-color: $blue;
     color: $white;
