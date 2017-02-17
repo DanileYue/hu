@@ -35,7 +35,7 @@ export default class TimesheetForm extends Component {
 		const { currentEntry } = this.state
 
 		return (
-			<AddEntriesForm
+			<Form
 				onChangeHandler={this.handleOnChange}
 				triggerEntryAddition={this.triggerEntryAddition}
 				currentEntry={currentEntry}
@@ -45,7 +45,7 @@ export default class TimesheetForm extends Component {
 }
 
 
-class AddEntriesForm extends Component {
+class Form extends Component {
 
   //to validate the datatypes of props
   static propTypes = {
