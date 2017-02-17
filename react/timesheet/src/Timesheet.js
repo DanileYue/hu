@@ -26,8 +26,7 @@ export default class TimesheetApp extends Component {
 		newEntry = JSON.parse(JSON.stringify(newEntry))
 		
 		this.setState({
-			entries: entries.concat(newEntry),
-			currentEntry: {"projectCode": "", "activity": "", hours: 0}
+			entries: entries.concat(newEntry)
 		})
 	}
 

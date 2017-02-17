@@ -19,6 +19,7 @@ export default class TimesheetEntries extends Component {
 			</tr>
 		)
 
+
 		return (
 		<div className="timesheet-table">
 			<table className="table">
@@ -31,8 +32,16 @@ export default class TimesheetEntries extends Component {
 			    </tr>
 			  </thead>
 			  <tbody>
-			  	{(entries.length !== 0)?rows: <tr><th style={{textAlign: 'center'}}
-					 																		 colSpan="4">No Entries Entered</th></tr>}
+			  	{(entries.length !== 0)?
+			  		rows
+			  	:
+			  		<tr>
+			  			<th
+			  				style={{textAlign: 'center'}}
+					 			colSpan="4">No Entries Entered
+					 		</th>
+					 	</tr>
+					}
 			  </tbody>
 			</table>
 		</div>
